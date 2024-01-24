@@ -1,7 +1,6 @@
 from functools import partial
-from random import sample, choice
+from random import sample, choice, seed
 
-from gower import gower_matrix
 from tqdm import tqdm
 
 import metrics as dm
@@ -10,6 +9,7 @@ import numpy as np
 
 class CLARANS:
     def __init__(self, data, k, numlocal, maxneighbour, distance_metric='euclidean', class_column='class'):
+        seed(42)
         self.dist_metric = distance_metric
 
         self.data = data
@@ -57,12 +57,6 @@ class CLARANS:
             p1 = np.array([float(p1[n]) for n in p1.dtype.names[:-1] if n != self.class_column])
             p2 = np.array([float(p2[n]) for n in p2.dtype.names[:-1] if n != self.class_column])
 
-        # if p1.dtype.names[-1] == 'class':  # and p1.dtype[-1] == 'S1':
-        #     if self.dist_metric != 'gower':
-        #         p1 = np.array([p1[n] for n in p1.dtype.names[:-1]])
-        # if p2.dtype.names[-1] == 'class':  # and p1.dtype[-1] == 'S1':
-        #     if self.dist_metric != 'gower':
-        #         p2 = np.array([p2[n] for n in p2.dtype.names[:-1]])
         return self.metrics.get(self.dist_metric, self.metrics['euclidean'])(p1, p2)
 
     def generate_clusters(self, medoids):
